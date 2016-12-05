@@ -45,7 +45,7 @@ function notifications_editor_ready() {
 
 /**
  * Route editor pages
- * 
+ *
  * @param string $hook   "route"
  * @param string $type   "notifications"
  * @param array  $return Segments and identifier
@@ -180,7 +180,7 @@ function notifications_editor_prepare_notification($hook, $type, $notification, 
 	}
 
 	$event = elgg_extract('event', $params);
-	if (!$event instanceof \Elgg\Notifications\Event) {
+	if (!$event instanceof \Elgg\Notifications\NotificationEvent) {
 		return;
 	}
 
@@ -202,16 +202,16 @@ function notifications_editor_prepare_notification($hook, $type, $notification, 
 	}
 
 	$template_params = array(
-		'action' => $action,
-		'actor' => $actor,
-		'object' => $object,
+		'action' => $action ? : 'notify_user',
+		'actor' => $actor ? : $sender,
+		'object' => $object ? : $recipient,
 		'target' => $target,
 
 		'sender' => $sender,
 		'recipient' => $recipient,
 		'language' => $language,
 		'site' => elgg_get_site_entity(),
-		
+
 		'params' => $notification->params,
 	);
 
@@ -231,7 +231,7 @@ function notifications_editor_prepare_notification($hook, $type, $notification, 
 
 /**
  * Formats notifications that have defined template
- * 
+ *
  * @param string                           $hook         "format"
  * @param string                           $type         "notification"
  * @param \Elgg\Notifications\Notification $notification Notification
@@ -251,7 +251,7 @@ function notifications_editor_format_notification($hook, $type, $notification, $
 	}
 
 	$event = elgg_extract('event', $params);
-	if ($event instanceof \Elgg\Notifications\Event) {
+	if ($event instanceof \Elgg\Notifications\NotificationEvent) {
 		$action = $event->getAction();
 		$actor = $event->getActor();
 		$object = $event->getObject();
@@ -268,9 +268,9 @@ function notifications_editor_format_notification($hook, $type, $notification, $
 	}
 
 	$template_params = array(
-		'action' => $action,
-		'actor' => $actor,
-		'object' => $object,
+		'action' => $action ? : 'notify_user',
+		'actor' => $actor ? : $notification->getSender(),
+		'object' => $object ? : $notification->getRecipient(),
 		'target' => $target,
 
 		'recipient' => $notification->getRecipient(),
